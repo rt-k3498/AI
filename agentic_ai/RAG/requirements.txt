@@ -1,0 +1,11 @@
+langchain 
+langchain-community 
+langchain-core
+pypdf
+langchain-text-splitters
+langchain-huggingface
+langchain-openai
+psycopg
+psycopg-pool
+python-dotenv
+supabase
