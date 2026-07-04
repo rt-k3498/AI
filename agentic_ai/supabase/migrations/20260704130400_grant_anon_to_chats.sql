@@ -1,0 +1,1 @@
+grant all on public.chats to anon;

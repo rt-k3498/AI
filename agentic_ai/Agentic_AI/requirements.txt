@@ -5,3 +5,4 @@ langchain-openai
 firecrawl-py
 python-dotenv
 langchain-core
+supabase
