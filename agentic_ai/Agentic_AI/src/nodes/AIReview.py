@@ -14,12 +14,16 @@ class ReviewOutputSchema(BaseModel):
     )
     id: str | None = Field(description="Do not interact or set this field")
 
+
 class AIReviewMessage(AIMessage):
     def __init__(self, content: str):
         super().__init__(content=content)
 
 
-llm = LLMWithStructuredOutput(output_schema=ReviewOutputSchema)
+llm = LLMWithStructuredOutput(
+    output_schema=ReviewOutputSchema,
+    system_rules="You are an AI agent that reviews the output of another AI agent. Your task is to evaluate the output and provide feedback on its quality (provide a score between 1 and 10), and relevance (provide a score between 1 and 10). You should also suggest improvements or corrections if necessary.",
+)
 
 
 def node(state: AgentState):
@@ -27,10 +31,7 @@ def node(state: AgentState):
     if not isinstance(last_message, AIMessage):
         return {"needs_review": False}
 
-    prompt = f"""You are an AI agent that reviews the output of another AI agent. Your task is to evaluate the output and provide feedback on its quality (provide a score between 1 and 10), and relevance (provide a score between 1 and 10). You should also suggest improvements or corrections if necessary.
-    messages: {state["messages"]}
-"""
-    response = llm.prompt(prompt)
+    response = llm.prompt(state["messages"])
     last_message_id = last_message.id
     response.id = last_message_id
     if response.score < 5 or response.relevance < 5:
